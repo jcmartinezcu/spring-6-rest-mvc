@@ -74,4 +74,13 @@ public class CustomerServiceImpl implements CustomerService {
         customerMap.values().stream().forEach(System.out::println);
         return saveCustomer;
     }
+
+    @Override
+    public void updateCustomerById(UUID customerId, Customer customer) {
+
+        Customer existing = customerMap.get(customerId);
+        existing.setCustomerName(customer.getCustomerName());
+
+        customerMap.put(existing.getId(), existing);
+    }
 }

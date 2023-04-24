@@ -20,6 +20,14 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+    @PutMapping("/{customerId}")
+    public ResponseEntity updateById(@PathVariable UUID customerId, @RequestBody Customer customer){
+
+        customerService.updateCustomerById(customerId,customer);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping
     public ResponseEntity handlerPost(@RequestBody Customer customer){
         log.debug("Ini HandlerPost - controller");
