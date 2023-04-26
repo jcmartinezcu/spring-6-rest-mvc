@@ -30,6 +30,29 @@ class BeerControllerIT {
     @Autowired
     BeerMapper beerMapper;
 
+    @Rollback
+    @Transactional
+    @Test
+    void deleteByIdFound() {
+
+        Beer beer = beerRepository.findAll().get(0);
+
+        ResponseEntity responseEntity = beerController.deleteById(beer.getId());
+
+        assertThat(responseEntity.getStatusCode().value()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(beerRepository.findById(beer.getId()).isEmpty());
+//        Beer foundBeer = beerRepository.findById(beer.getId()).get();
+//        assertThat(foundBeer).isNull();
+    }
+
+    @Test
+    void testUpdateNoFound() {
+        assertThrows(NotFoundException.class , ()->{
+            beerController.updateById(UUID.randomUUID(), BeerDTO.builder().build());
+        });
+    }
+    @Rollback
+    @Transactional
     @Test
     void updateExistingBeer() {
         Beer beer = beerRepository.findAll().get(0);
@@ -45,13 +68,6 @@ class BeerControllerIT {
 
         Beer updateBeer = beerRepository.findById(beer.getId()).orElseThrow();
         assertThat(updateBeer.getBeerName()).isEqualTo(beerName);
-    }
-
-    @Test
-    void testUpdateNoFound() {
-        assertThrows(NotFoundException.class , ()->{
-            beerController.updateById(UUID.randomUUID(), BeerDTO.builder().build());
-        });
     }
 
     @Rollback
