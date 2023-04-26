@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -50,6 +51,24 @@ class BeerControllerTest {
 
     BeerServiceImpl beerServiceImpl;
 
+
+    @Test
+    void testUpdateBeerBlankName() throws Exception{
+        BeerDTO beerDTO = beerServiceImpl.listBeers().get(0);
+        beerDTO.setBeerName("");
+
+        given(beerService.updateBeerById(any(),any(BeerDTO.class))).willReturn(Optional.of(beerDTO));
+
+        mockMvc.perform(put(BeerController.BEER_PATH_ID, beerDTO.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(beerDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()", is(1)));
+
+        //verify(beerService).updateBeerById(any(UUID.class), any(BeerDTO.class));
+    }
+
     @Test
     void testCreateBeerNullBeerName() throws Exception {
         BeerDTO beerDTO = BeerDTO.builder().build();
@@ -60,7 +79,9 @@ class BeerControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beerDTO)))
-                .andExpect(status().isBadRequest()).andReturn();
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()", is(6)))
+                .andReturn();
 
         System.out.println(mvcResult.getResponse().getContentAsString());
     }
