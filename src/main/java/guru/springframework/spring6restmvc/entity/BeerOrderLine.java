@@ -40,6 +40,12 @@ public class BeerOrderLine {
 
     private Integer quantityAllocated = 0;
 
+    @ManyToOne
+    private BeerOrder beerOrder;
+
+    @ManyToOne
+    private Beer beer;
+
     public boolean isNew(){
         return this.id == null;
     }
