@@ -67,7 +67,7 @@ class BeerControllerIT {
                         .queryParam("pageNumber", "2")
                         .queryParam("pageSize", "50"))
                 .andExpect(status().isOk())
-              //  .andExpect(jsonPath("$.content.size()", is(50)))
+                .andExpect(jsonPath("$.content.size()", is(50)))
                 .andExpect(jsonPath("$.content[0].quantityOnHand").value(IsNull.notNullValue()));
 
     }
@@ -76,7 +76,8 @@ class BeerControllerIT {
         mockMvc.perform(get(BeerController.BEER_PATH)
                         .queryParam("beerName", "IPA")
                         .queryParam("beerStyle", BeerStyle.IPA.name())
-                        .queryParam("showInventory","true"))
+                        .queryParam("showInventory","true")
+                        .queryParam("pageSize", "800"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.size()", is(310)))
                 .andExpect(jsonPath("$.content.[0].quantityOnHand").value(IsNull.notNullValue()));
@@ -88,7 +89,8 @@ class BeerControllerIT {
         mockMvc.perform(get(BeerController.BEER_PATH)
                 .queryParam("beerName", "IPA")
                 .queryParam("beerStyle", BeerStyle.IPA.name())
-                .queryParam("showInventory","false"))
+                .queryParam("showInventory","false")
+                .queryParam("pageSize", "800"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.size()", is(310)))
                 .andExpect(jsonPath("$.content.[0].quantityOnHand").value(IsNull.nullValue()));
@@ -99,7 +101,8 @@ class BeerControllerIT {
     void testListBeersByStyleAndName() throws Exception {
         mockMvc.perform(get(BeerController.BEER_PATH)
                 .queryParam("beerName", "IPA")
-                .queryParam("beerStyle", BeerStyle.IPA.name()))
+                .queryParam("beerStyle", BeerStyle.IPA.name())
+                .queryParam("pageSize", "800"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.size()", is(310)));
     }
